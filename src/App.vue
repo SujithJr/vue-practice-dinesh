@@ -26,7 +26,7 @@ export default {
 
     data: () => ({
         links: [
-            { label: 'Custom Events', path: '/' },
+            { label: 'Custom Events', path: '/' }, 
         ]
     })
 }
