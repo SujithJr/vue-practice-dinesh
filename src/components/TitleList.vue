@@ -119,9 +119,10 @@ export default {
     },
 
     titleCopy(item) {
-        // console.log(item)
-        // console.log(item.id)
-      item.id = this.title.id = uuidv4();
+      console.log(item.id);
+      var dummyid = uuidv4();
+      console.log(item.id, dummyid);
+      dummyid = item.id;
       this.title_store(item);
     },
 

@@ -1,11 +1,13 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import CustomEvents from '../views/CustomEvents.vue'
+import Emitt from '../views/ParentCom.vue'
 
 Vue.use(VueRouter)
 
 const routes = [
     { path: '/', name: 'custom-events', component: CustomEvents },
+    { path: '/emitt', name: 'custom-emitt', component: Emitt },
 ]
 
 const router = new VueRouter({

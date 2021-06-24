@@ -32,6 +32,57 @@
         </v-row>
       </v-container>
     </div>
+
+    <v-dialog v-model="editDialog" persistent max-width="600">
+      <v-card>
+        <v-card-title>Title Name</v-card-title>
+        <v-divider></v-divider>
+        <v-card-text>
+          <v-container>
+            <v-row>
+              <v-col cols="12" sm="6" md="12">
+                <v-text-field
+                  label="Title"
+                  v-model="title_item.name"
+                  @change="btnDisableSave()"
+                  required
+                ></v-text-field>
+              </v-col>
+            </v-row>
+          </v-container>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <!-- <v-btn color="red" dark @click="editDialog = false">Close</v-btn> -->
+            <v-btn color="blue" dark @click="titleUpdate(title_item)">Save</v-btn>
+          </v-card-actions>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog v-model="deleteDialog" persistent max-width="600">
+      <v-card>
+        <v-card-title color="red lighten-1">confirm delete this title please enter "DELETE"</v-card-title>
+        <v-divider></v-divider>
+        <v-card-text>
+          <v-container>
+            <v-row>
+              <v-col cols="12" sm="6" md="12">
+                <v-text-field v-model="deleteTitle" @change="btnDisable()" label="DELETE" required></v-text-field>
+              </v-col>
+            </v-row>
+          </v-container>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <!-- <v-btn color="red"  @click="deleteDialog = false">Close</v-btn> -->
+            <v-btn
+              color="blue"
+              :disabled="disableDelete"
+              @click="deleteConfim(title_item.id)"
+            >Confirm</v-btn>
+          </v-card-actions>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -49,6 +100,11 @@ export default {
         name: "",
         id: "",
       },
+      confirmDelete: "DELETE",
+      disableDelete: true,
+      editDialog: false,
+      deleteDialog: false,
+      deleteTitle: "",
     };
   },
   computed: {
@@ -61,6 +117,9 @@ export default {
   methods: {
     ...mapActions("Title", {
       title_store: "store",
+      title_edit: "show",
+      title_update: "update",
+      title_delete: "delete",
     }),
 
     addTitle() {
@@ -71,6 +130,49 @@ export default {
         name: "",
         id: "",
       };
+    },
+
+    titleEdit(id) {
+      this.editDialog = true;
+      this.title_edit(id);
+      console.log(this.title_item);
+    },
+
+    titleDelete(id) {
+      this.deleteDialog = true;
+      this.title_edit(id);
+    },
+    btnDisable() {
+      if (this.deleteTitle === this.confirmDelete && this.deleteTitle !== "") {
+        this.disableDelete = false;
+      } else {
+        this.disableDelete = true;
+      }
+    },
+
+    btnDisableSave() {
+      if (this.deleteTitle === this.confirmDelete && this.deleteTitle !== "") {
+        this.disableDelete = false;
+      } else {
+        this.disableDelete = true;
+      }
+    },
+
+    deleteConfim(id) {
+      this.title_delete(id);
+      this.deleteDialog = false;
+    },
+
+    titleCopy(item) {
+      item.id = uuidv4();
+      this.title_store(item);
+    },
+
+    titleUpdate(item) {
+      if (item.name !== "") {
+        this.editDialog = false;
+        this.title_update(this.title_item);
+      }
     },
   },
 };
