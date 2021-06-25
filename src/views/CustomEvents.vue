@@ -72,14 +72,35 @@
           </v-card-text>
         </v-card>
       </v-dialog>
+
+      <v-dialog v-model="copyDialog" persistent max-width="600">
+        <v-card>
+          <v-card-title color="red lighten-1">Copy Title</v-card-title>
+          <v-divider></v-divider>
+          <v-card-text>
+            <v-container>
+              <v-row>
+                <v-col cols="12" sm="6" md="12">
+                  <v-text-field v-model="copyTitle" label="title" required></v-text-field>
+                </v-col>
+              </v-row>
+            </v-container>
+            <v-card-actions>
+              <v-btn color="yellow" @click="copySame(defaultCopytitle)">Ok</v-btn>
+              <v-spacer></v-spacer>
+              <v-btn color="blue" @click="copyChange(copyTitle)">Copy</v-btn>
+            </v-card-actions>
+          </v-card-text>
+        </v-card>
+      </v-dialog>
     </div>
   </div>
 </template>
 
 <script>
-import TitleList from '../components/TitleList.vue';
-import { mapGetters, mapActions } from 'vuex';
-import { v4 as uuidv4 } from 'uuid';
+import TitleList from "../components/TitleList.vue";
+import { mapGetters, mapActions } from "vuex";
+import { v4 as uuidv4 } from "uuid";
 export default {
   components: {
     TitleList,
@@ -87,74 +108,98 @@ export default {
   data() {
     return {
       title: {
-        name: '',
-        id: '',
+        name: "",
+        id: "",
       },
-      confirmDelete: 'DELETE',
+      confirmDelete: "DELETE",
       disableDelete: true,
       editDialog: false,
       deleteDialog: false,
-      deleteTitle: '',
+      copyDialog: false,
+      deleteTitle: "",
+      copyTitle: "",
+      defaultCopytitle: "",
     };
   },
   computed: {
-    ...mapGetters('Title', {
-      title_lists: 'list',
-      title_item: 'item',
+    ...mapGetters("Title", {
+      title_lists: "list",
+      title_item: "item",
     }),
   },
 
   methods: {
-    ...mapActions('Title', {
-      title_store: 'store',
-      title_show: 'show',
-      title_update: 'update',
-      title_delete: 'delete',
+    ...mapActions("Title", {
+      title_store: "store",
+      title_show: "show",
+      title_update: "update",
+      title_delete: "delete",
     }),
 
     addTitle() {
       this.title.id = uuidv4();
       this.title_store(this.title);
       this.title = {
-        name: '',
-        id: '',
+        name: "",
+        id: "",
       };
     },
 
     titleEditEmiit(id) {
-      this.editDialog = true
-      this.title_show(id)
+      this.editDialog = true;
+      this.title_show(id);
     },
     titleUpdate(item) {
-      if (item.name !== '') {
-        this.editDialog = false
-        this.title_update(this.title_item)
+      if (item.name !== "") {
+        this.editDialog = false;
+        this.title_update(this.title_item);
       }
     },
 
     titleDeleteEmiit(id) {
-      this.deleteDialog = true
-      this.title_show(id)
+      this.deleteDialog = true;
+      this.title_show(id);
     },
 
     btnDisable() {
-      if (this.deleteTitle === this.confirmDelete && this.deleteTitle !== '') {
-        this.disableDelete = false
+      if (this.deleteTitle === this.confirmDelete && this.deleteTitle !== "") {
+        this.disableDelete = false;
       } else {
-        this.disableDelete = true
+        this.disableDelete = true;
       }
     },
 
     deleteConfim(id) {
-      this.title_delete(id)
-      this.deleteDialog = false
-      this.deleteTitle=''
+      this.title_delete(id);
+      this.deleteDialog = false;
+      this.deleteTitle = "";
     },
 
     titleCopyEmiit(item) {
-     var items = { ...item };
-      items.id = uuidv4();
-      this.title_store(items);
+      this.copyDialog = true;
+      this.copyTitle = item.name;
+      this.defaultCopytitle = item.name;
+      //  var items = { ...item };
+      //   items.id = uuidv4();
+      //   this.title_store(items);
+    },
+
+    copySame(defaultCopytitle) {
+      this.copyDialog = false;
+      var copyItem = {
+        name: defaultCopytitle,
+        id: uuidv4(),
+      };
+      this.title_store(copyItem);
+    },
+
+    copyChange(copyTitle) {
+      this.copyDialog = false;
+      var copyItem = {
+        name: copyTitle,
+        id: uuidv4(),
+      };
+      this.title_store(copyItem);
     },
   },
 };
