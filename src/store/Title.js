@@ -10,7 +10,7 @@ export default {
 
     mutations: {
         ADD_ITEM(state,title){
-            state.list.unshift(title)
+            state.list.push(title)
         },
         EDIT_ITEM(state,id){
            var index =  state.list.findIndex((p) => p.id == id);
